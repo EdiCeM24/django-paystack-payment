@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<h1>Make Payments</h1>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endBlock content %}
+
+
+{% extends "base.html" %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>django-paystack-payment</title>
+</head>
+<body>
+    {% block content %}
+      <div class="container">
+          <header>
+              <div class="brand">
+                  <a href="/#/talk">Paystack-payment</a>
+              </div>
+              <div>
+                  <a href="/#/sign-in">Sign In</a>
+                  
+                  <a href="/#/cart">Cart</a>
+              </div>
+          </header>
+          <main>
+              <div>
+                <div class="d-flex row justify-content-center align-items-center py-md-py-5 py-1 " style="min-height: ;">
+                    <div class="col-12">
+                        <div>
+                            <div class="row">
+                                {% for Product in products %}
+                                        <div class="col">
+                                        <div class="row">
+                                        <div class="col">
+                                        <div class="card" style="width: 18rem;">
+                                        <img class="card-img-top" src="{{ Blog.image }}" alt="Card image cap">
+                                        <div class="card-body">
+                                        <h3 class="product-text">{{ Blog.name }}</h3>
+                                        <h5 class="card-title">{{ Blog.email }}</h5>
+                                        <h4 class="">{{ Blog.phone }}</h4>
+                                        <p class="card-text">{{ Blog.text }}</p>
+                                        <a href="#" class="btn btn-primary">Add To Cart</a>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>
+                                {% endfor %}
+                            </div>                    
+                        </div>
+                    </div>
+                </div>
+              </div>
+              <div class="wrapper">
+                <h5>Make payment for: NGN {{ payment.amount }}</h5>
+                <hr>
+                  <script src="https://js.paystack.co/v1/inline.js"></script>
+                  <button type="submit" class="btn btn-large btn-success" id="django-paystack-button" onclick="payWithPaystack()">Make Payment</button>
+              </div>
+          </main>
+          <footer>
+              All rights reserved @2023.
+          </footer>
+      </div>
+<script>
+    function payWithPaystack() {
+        let currency = "usd";
+        let plan = "";
+        let ref = "{{ payment.amount }}";
+        let obj = {
+            key: "{{ paystack_public_key }}",
+            email: "{{ payment.email }}",
+            amount: "{{ payment.amount_value }}",
+            ref: ref,
+            callback: function (response) {
+                window.location.href = "{% url 'verify-payment' payment.ref %}";
+            }
+        }
+        if(Boolean(currency)) {
+            obj.currency = currency.toUpperCase() // when you are dealing with different currencies in the world you need to do it this way.
+        }
+        if(Boolean(plan)) {
+            obj.plan = plan;
+        }
+        var handler = paystackPop.setup(obj);
+        handler.openIframe();
+    }
+</script>
+</body>
+</html>
+
+{% endblock content %}
